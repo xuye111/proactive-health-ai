@@ -1,0 +1,30 @@
+{
+  "entities": [
+    { "id": "sleep_hours", "name": "睡眠时长", "type": "metric" },
+    { "id": "bed_time", "name": "入睡时点", "type": "metric" },
+    { "id": "steps", "name": "步数", "type": "metric" },
+    { "id": "active_minutes", "name": "活动时间", "type": "metric" },
+    { "id": "caffeine", "name": "咖啡因摄入", "type": "behavior" },
+    { "id": "screen_time", "name": "睡前屏幕使用", "type": "behavior" },
+    { "id": "late_work", "name": "晚间工作", "type": "event" },
+    { "id": "stress", "name": "压力水平", "type": "state" },
+    { "id": "sleep_decline", "name": "睡眠下降", "type": "signal" },
+    { "id": "activity_decline", "name": "活动下降", "type": "signal" },
+    { "id": "personal_baseline", "name": "个人基线", "type": "concept" },
+    { "id": "sleep_goal", "name": "改善睡眠", "type": "goal" }
+  ],
+  "relations": [
+    { "from": "caffeine", "label": "推迟", "to": "bed_time", "source": "睡眠" },
+    { "from": "late_work", "label": "推迟", "to": "bed_time", "source": "长期记忆" },
+    { "from": "screen_time", "label": "延长入睡潜伏期", "to": "bed_time", "source": "睡眠" },
+    { "from": "bed_time", "label": "影响", "to": "sleep_hours", "source": "睡眠" },
+    { "from": "sleep_hours", "label": "低于", "to": "personal_baseline", "source": "趋势判断" },
+    { "from": "sleep_hours", "label": "持续下滑触发", "to": "sleep_decline", "source": "趋势判断" },
+    { "from": "steps", "label": "持续下滑触发", "to": "activity_decline", "source": "趋势判断" },
+    { "from": "stress", "label": "加剧", "to": "sleep_decline", "source": "压力与情绪" },
+    { "from": "activity_decline", "label": "同期出现", "to": "sleep_decline", "source": "趋势判断" },
+    { "from": "sleep_decline", "label": "触发行动", "to": "sleep_goal", "source": "计划" },
+    { "from": "caffeine", "label": "与目标冲突", "to": "sleep_goal", "source": "计划" },
+    { "from": "active_minutes", "label": "计入", "to": "steps", "source": "运动" }
+  ]
+}

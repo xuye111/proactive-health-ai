@@ -1,0 +1,602 @@
+[
+  {
+    "date": "2026-08-21",
+    "sleepHours": 7.4,
+    "sleepScore": 86,
+    "bedTime": "23:35",
+    "wakeTime": "07:21",
+    "steps": 5200,
+    "activeMinutes": 27,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1200,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58
+  },
+  {
+    "date": "2026-08-22",
+    "sleepHours": 7.1,
+    "sleepScore": 82,
+    "bedTime": "23:52",
+    "wakeTime": "07:20",
+    "steps": 5791,
+    "activeMinutes": 30,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1337,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58
+  },
+  {
+    "date": "2026-08-23",
+    "sleepHours": 6.8,
+    "sleepScore": 79,
+    "bedTime": "00:09",
+    "wakeTime": "07:19",
+    "steps": 6382,
+    "activeMinutes": 34,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1474,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58
+  },
+  {
+    "date": "2026-08-24",
+    "sleepHours": 7.5,
+    "sleepScore": 87,
+    "bedTime": "00:26",
+    "wakeTime": "08:18",
+    "steps": 6973,
+    "activeMinutes": 37,
+    "meals": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1611,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58
+  },
+  {
+    "date": "2026-08-25",
+    "sleepHours": 7.2,
+    "sleepScore": 84,
+    "bedTime": "23:42",
+    "wakeTime": "07:16",
+    "steps": 7564,
+    "activeMinutes": 40,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1748,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-08-26",
+    "sleepHours": 6.9,
+    "sleepScore": 80,
+    "bedTime": "23:59",
+    "wakeTime": "07:15",
+    "steps": 5255,
+    "activeMinutes": 28,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": false
+    },
+    "waterMl": 1885,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-08-27",
+    "sleepHours": 7.6,
+    "sleepScore": 88,
+    "bedTime": "00:16",
+    "wakeTime": "08:14",
+    "steps": 5846,
+    "activeMinutes": 31,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1322,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-08-28",
+    "sleepHours": 7,
+    "sleepScore": 81,
+    "bedTime": "00:33",
+    "wakeTime": "07:55",
+    "steps": 6437,
+    "activeMinutes": 34,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1459,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-08-29",
+    "sleepHours": 7.3,
+    "sleepScore": 85,
+    "bedTime": "23:49",
+    "wakeTime": "07:29",
+    "steps": 7028,
+    "activeMinutes": 37,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1596,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-08-30",
+    "sleepHours": 6.7,
+    "sleepScore": 78,
+    "bedTime": "00:06",
+    "wakeTime": "07:10",
+    "steps": 7619,
+    "activeMinutes": 40,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1733,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-08-31",
+    "sleepHours": 7.2,
+    "sleepScore": 84,
+    "bedTime": "00:23",
+    "wakeTime": "07:57",
+    "steps": 5310,
+    "activeMinutes": 28,
+    "meals": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1870,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.1
+  },
+  {
+    "date": "2026-09-01",
+    "sleepHours": 7.4,
+    "sleepScore": 86,
+    "bedTime": "23:39",
+    "wakeTime": "07:25",
+    "steps": 5901,
+    "activeMinutes": 31,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1307,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-02",
+    "sleepHours": 6.8,
+    "sleepScore": 79,
+    "bedTime": "23:56",
+    "wakeTime": "07:06",
+    "steps": 6492,
+    "activeMinutes": 34,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1444,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-03",
+    "sleepHours": 7.1,
+    "sleepScore": 82,
+    "bedTime": "00:13",
+    "wakeTime": "07:41",
+    "steps": 7083,
+    "activeMinutes": 37,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1581,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-04",
+    "sleepHours": 7.5,
+    "sleepScore": 87,
+    "bedTime": "00:30",
+    "wakeTime": "08:22",
+    "steps": 7674,
+    "activeMinutes": 40,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": false
+    },
+    "waterMl": 1718,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-05",
+    "sleepHours": 6.9,
+    "sleepScore": 80,
+    "bedTime": "23:46",
+    "wakeTime": "07:02",
+    "steps": 5365,
+    "activeMinutes": 28,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1855,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-06",
+    "sleepHours": 7,
+    "sleepScore": 81,
+    "bedTime": "00:03",
+    "wakeTime": "07:25",
+    "steps": 5956,
+    "activeMinutes": 31,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1292,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-07",
+    "sleepHours": 7.3,
+    "sleepScore": 85,
+    "bedTime": "00:20",
+    "wakeTime": "08:00",
+    "steps": 6547,
+    "activeMinutes": 34,
+    "meals": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1429,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.2
+  },
+  {
+    "date": "2026-09-08",
+    "sleepHours": 7.2,
+    "sleepScore": 84,
+    "bedTime": "23:36",
+    "wakeTime": "07:10",
+    "steps": 7138,
+    "activeMinutes": 38,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1566,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-09",
+    "sleepHours": 6.6,
+    "sleepScore": 77,
+    "bedTime": "23:53",
+    "wakeTime": "06:51",
+    "steps": 4829,
+    "activeMinutes": 25,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1703,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-10",
+    "sleepHours": 7.4,
+    "sleepScore": 86,
+    "bedTime": "00:10",
+    "wakeTime": "07:56",
+    "steps": 5420,
+    "activeMinutes": 29,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1840,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-11",
+    "sleepHours": 7.1,
+    "sleepScore": 82,
+    "bedTime": "00:27",
+    "wakeTime": "07:55",
+    "steps": 6011,
+    "activeMinutes": 32,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1277,
+    "caffeineCups": 0,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-12",
+    "sleepHours": 7.2,
+    "sleepScore": 84,
+    "bedTime": "23:43",
+    "wakeTime": "07:17",
+    "steps": 4620,
+    "activeMinutes": 24,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1414,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-13",
+    "sleepHours": 7.3,
+    "sleepScore": 85,
+    "bedTime": "00:00",
+    "wakeTime": "07:40",
+    "steps": 4380,
+    "activeMinutes": 23,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": false
+    },
+    "waterMl": 1551,
+    "caffeineCups": 3,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-14",
+    "sleepHours": 6.9,
+    "sleepScore": 80,
+    "bedTime": "00:17",
+    "wakeTime": "07:33",
+    "steps": 4510,
+    "activeMinutes": 24,
+    "meals": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1688,
+    "caffeineCups": 1,
+    "energy": 4,
+    "stress": 2,
+    "mood": 4,
+    "weightKg": 58.3
+  },
+  {
+    "date": "2026-09-15",
+    "sleepHours": 7.1,
+    "sleepScore": 82,
+    "bedTime": "00:34",
+    "wakeTime": "08:02",
+    "steps": 4460,
+    "activeMinutes": 23,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1825,
+    "caffeineCups": 2,
+    "energy": 4,
+    "stress": 3,
+    "mood": 4,
+    "weightKg": 58.4
+  },
+  {
+    "date": "2026-09-16",
+    "sleepHours": 6.8,
+    "sleepScore": 79,
+    "bedTime": "00:12",
+    "wakeTime": "07:22",
+    "steps": 4550,
+    "activeMinutes": 24,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1262,
+    "caffeineCups": 3,
+    "energy": 3,
+    "stress": 3,
+    "mood": 3,
+    "weightKg": 58.4
+  },
+  {
+    "date": "2026-09-17",
+    "sleepHours": 6.3,
+    "sleepScore": 73,
+    "bedTime": "00:22",
+    "wakeTime": "07:02",
+    "steps": 4440,
+    "activeMinutes": 23,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1399,
+    "caffeineCups": 1,
+    "energy": 3,
+    "stress": 4,
+    "mood": 3,
+    "weightKg": 58.4
+  },
+  {
+    "date": "2026-09-18",
+    "sleepHours": 6.1,
+    "sleepScore": 71,
+    "bedTime": "00:32",
+    "wakeTime": "07:00",
+    "steps": 4540,
+    "activeMinutes": 24,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1536,
+    "caffeineCups": 2,
+    "energy": 3,
+    "stress": 4,
+    "mood": 3,
+    "weightKg": 58.4
+  },
+  {
+    "date": "2026-09-19",
+    "sleepHours": 6.2,
+    "sleepScore": 72,
+    "bedTime": "00:42",
+    "wakeTime": "07:16",
+    "steps": 3241,
+    "activeMinutes": 28,
+    "meals": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true
+    },
+    "waterMl": 1673,
+    "caffeineCups": 2,
+    "energy": 3,
+    "stress": 4,
+    "mood": 3,
+    "weightKg": 58.4
+  }
+]

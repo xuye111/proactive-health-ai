@@ -1,0 +1,85 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    'Noto Sans SC', system-ui, sans-serif;
+
+  --color-canvas: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-line: #e6ebf1;
+  --color-line-soft: #f1f5f9;
+
+  --color-ink: #0f172a;
+  --color-ink-soft: #475569;
+  --color-muted: #94a3b8;
+
+  --color-brand: #0d9488;
+  --color-brand-deep: #0f766e;
+  --color-brand-soft: #ccfbf1;
+
+  --color-sleep: #6366f1;
+  --color-activity: #f59e0b;
+  --color-diet: #10b981;
+  --color-mind: #ec4899;
+
+  --color-warn: #ea580c;
+  --color-warn-soft: #ffedd5;
+  --color-danger: #e11d48;
+  --color-calm: #eef2ff;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+}
+
+/* 移动端安全区：刘海屏与 iPhone home indicator */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.nav-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.main-safe-bottom {
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+}
+
+/* AI 页的输入框：sticky 在底部导航之上，不遮住最后一条消息 */
+.composer-dock {
+  bottom: calc(60px + env(safe-area-inset-bottom));
+}
+
+/* 横向滑动区域隐藏滚动条 */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 卡片是这一版反复出现的基本单元 */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 18px;
+}

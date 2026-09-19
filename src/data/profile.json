@@ -1,0 +1,24 @@
+{
+  "name": "林晓",
+  "age": 33,
+  "gender": "女",
+  "heightCm": 165,
+  "weightKg": 58.4,
+  "background": {
+    "history": "无慢性病史，2024 年一次缺铁性贫血已纠正",
+    "family": "父亲高血压（55 岁确诊）",
+    "medications": "无长期用药",
+    "allergies": "青霉素"
+  },
+  "lifestyle": {
+    "sleep": "目标 23:30 前入睡，实际多在 00:00–00:40",
+    "diet": "三餐规律，晚间咖啡因偏多",
+    "exercise": "以步行为主，每周 3–4 次，单次 25–40 分钟",
+    "habits": "不吸烟，社交场合少量饮酒"
+  },
+  "goals": [
+    { "id": "sleep", "label": "改善睡眠", "detail": "平均睡眠恢复到 7 小时以上" },
+    { "id": "activity", "label": "提升运动", "detail": "每周完成 4 次 30 分钟活动" },
+    { "id": "weight", "label": "控制体重", "detail": "体重稳定在 57–59 kg" }
+  ]
+}

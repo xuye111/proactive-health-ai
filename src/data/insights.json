@@ -1,0 +1,28 @@
+{
+  "healthScore": 78,
+  "scoreLabel": "整体稳定",
+  "scoreNote": "睡眠与活动同时走低，尚未触及风险边界",
+  "known": ["睡眠下降", "活动减少", "近期压力较高"],
+  "finding": {
+    "summary": "最近三天睡眠时间持续下降，同时白天活动量减少。",
+    "detail": "近 3 日睡眠均低于 30 天个人基线，同期步数明显回落。两者同时出现，更可能是同一段生活节律变化的结果，而不是单一指标波动。",
+    "suggestion": "今晚建议优先恢复睡眠节律。"
+  },
+  "followUp": {
+    "question": "最近是否出现下面这些情况？可以多选，没有就选最后一项。",
+    "options": [
+      { "id": "difficulty-falling-asleep", "label": "入睡困难" },
+      { "id": "night-waking", "label": "夜间醒来" },
+      { "id": "late-work", "label": "工作较晚" },
+      { "id": "stress", "label": "情绪压力" },
+      { "id": "no-obvious", "label": "没有明显感觉", "exclusive": true }
+    ]
+  },
+  "trendNarrative": "过去三天睡眠持续低于你的个人基线。当前未发现明显异常，建议优先观察睡眠节律变化。",
+  "context": {
+    "population": "成人建议 7–9 小时",
+    "personal": "个人 30 天基线 7.0 小时",
+    "trend": "近 3 日连续低于基线，且入睡时间推迟",
+    "events": "记忆：最近两次睡眠不足都出现在工作日晚间加班之后"
+  }
+}

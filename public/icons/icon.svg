@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="主动健康 AI Agent">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#14b8a6" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)" />
+  <path
+    d="M96 272 H176 L208 208 L256 320 L296 240 L336 272 H416"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="28"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "mem-behavior-weekend",
+    "date": "2026-08-24",
+    "type": "behavior",
+    "text": "周末入睡时间比工作日平均晚 1 小时 20 分",
+    "source": "数据观察"
+  },
+  {
+    "id": "mem-feedback-deadline",
+    "date": "2026-08-28",
+    "type": "feedback",
+    "text": "提到最近是项目交付期，晚间需要处理工作",
+    "source": "对话"
+  },
+  {
+    "id": "mem-adherence-week34",
+    "date": "2026-09-02",
+    "type": "adherence",
+    "text": "本周 4 条行动完成 2 条，未完成的两条都出现在加班日",
+    "source": "计划执行"
+  },
+  {
+    "id": "mem-preference-walking",
+    "date": "2026-09-05",
+    "type": "preference",
+    "text": "偏好步行为主的活动方式，不太接受健身房类安排",
+    "source": "对话"
+  },
+  {
+    "id": "mem-event-cold",
+    "date": "2026-09-09",
+    "type": "event",
+    "text": "感冒休息两天，期间日均步数降到 2,100",
+    "source": "健康事件"
+  },
+  {
+    "id": "mem-behavior-caffeine",
+    "date": "2026-09-15",
+    "type": "behavior",
+    "text": "16:00 后摄入咖啡因的天数，与入睡推迟日期高度重合",
+    "source": "数据观察"
+  }
+]

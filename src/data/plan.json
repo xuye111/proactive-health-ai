@@ -1,0 +1,49 @@
+{
+  "weekOf": "2026-09-14",
+  "goals": [
+    {
+      "id": "goal-sleep",
+      "area": "睡眠",
+      "title": "平均睡眠恢复到 7 小时以上",
+      "detail": "近 7 日均值 6.7 小时，距目标 0.3 小时",
+      "progress": 62,
+      "target": "7.0h",
+      "metric": "sleep"
+    },
+    {
+      "id": "goal-activity",
+      "area": "运动",
+      "title": "完成 4 次 30 分钟活动",
+      "detail": "本周已完成 2 次",
+      "progress": 50,
+      "target": "4 次",
+      "metric": "activity"
+    },
+    {
+      "id": "goal-caffeine",
+      "area": "生活方式",
+      "title": "减少晚间咖啡因",
+      "detail": "本周 5 天中 3 天在 16:00 后摄入咖啡因",
+      "progress": 40,
+      "target": "≤1 天",
+      "metric": "caffeine"
+    }
+  ],
+  "todayActions": [
+    {
+      "id": "act-walk",
+      "text": "午饭后步行 20 分钟",
+      "reason": "今日步数较过去 7 日下降 28%"
+    },
+    {
+      "id": "act-caffeine",
+      "text": "下午 4 点后不喝咖啡",
+      "reason": "近 3 日入睡时间持续推迟"
+    },
+    {
+      "id": "act-sleep",
+      "text": "23:30 前准备入睡",
+      "reason": "连续 4 天睡眠低于个人基线"
+    }
+  ]
+}
