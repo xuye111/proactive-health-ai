@@ -1,14 +1,16 @@
 # 主动健康助手「小满」
 
-> 面向个人长期健康管理场景的**主动**健康智能体。核心不是「用户问、AI 答」，而是：
-> **健康档案 → 持续数据 → 变化识别 → 判断 → 主动追问 → 行动计划 → 执行 → 反馈 → 更新认知**
+> 用可运行的安全边界约束 AI 健康建议。面向个人长期健康管理，小满不等人提问。它读你的档案与持续数据，识别变化，主动追问，据此改写当天行动，再把结果写回记忆。
+>
+> `健康档案 → 持续数据 → 变化识别 → 判断 → 主动追问 → 行动计划 → 执行 → 反馈 → 更新认知`
 
 [![CI](https://github.com/xuye111/proactive-health-ai/actions/workflows/ci.yml/badge.svg)](./.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 ![Eval](https://img.shields.io/badge/eval-275%2B38%20assertions-brightgreen)
 
-**它是什么**：一个可运行的移动端 PWA，演示主动健康管理的完整闭环。
-**它不是什么**：不是医疗服务，不做诊断、处方、治疗决策，也不做个体风险评分。
+**它做什么** 一个可运行的移动端 PWA，演示主动健康管理的完整链路。
+
+**它不做什么** 不提供医疗服务，不做诊断、处方与治疗决策，也不生成个体风险评分。
 
 ## 3 分钟看懂
 
