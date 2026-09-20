@@ -24,6 +24,7 @@ const RESET = '\u001b[0m'
 
 const args = process.argv.slice(2)
 const jsonOnly = args.includes('--json')
+const verbose = args.includes('--verbose')
 const providerArg = args.find((arg) => arg.startsWith('--provider='))?.split('=')[1] ?? 'rules'
 
 const readJson = (name) => JSON.parse(readFileSync(new URL(`../eval/${name}`, import.meta.url), 'utf8'))
@@ -371,6 +372,17 @@ if (jsonOnly) {
 }
 
 console.log(`${BOLD}主动健康助手 · AI 流水线评测${RESET} ${DIM}(provider: ${providerArg})${RESET}`)
+if (verbose) {
+  console.log(`${BOLD}逐条明细${RESET} ${DIM}（用例 → 断言数）${RESET}`)
+  for (const result of [...behavior, ...knownGaps, ...guardrails]) {
+    const flag = result.allOk ? `${GREEN}✓${RESET}` : `${RED}✗${RESET}`
+    console.log(
+      `  ${flag} ${result.testCase.id.padEnd(5)} ${String(result.assertions.length).padStart(3)} 条断言  ${DIM}${result.testCase.title}${RESET}`,
+    )
+  }
+  console.log('')
+}
+
 console.log('')
 console.log(`${BOLD}① 行为套件${RESET} ${DIM}判断与回答是否符合产品边界${RESET}`)
 console.log(

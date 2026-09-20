@@ -61,6 +61,8 @@ npm install
 npm run dev        # http://127.0.0.1:4173/
 
 npm run eval       # AI 流水线评测：行为套件 + 守门套件（有失败时退出码 1）
+npm run eval -- --verbose        # 逐条明细：每个用例对应多少条断言
+npm run eval -- --json           # 只输出 JSON，便于 CI 归档
 npm run eval -- --provider=llm   # 换成真实模型跑行为套件（需 LLM_API_KEY）
 npm run build      # 类型检查 + 生产构建
 npm run preview    # 预览构建产物
