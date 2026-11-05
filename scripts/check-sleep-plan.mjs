@@ -1,0 +1,75 @@
+import assert from 'node:assert/strict'
+import { createServer } from 'vite'
+import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { MemoryRouter } from 'react-router-dom'
+
+const values = new Map()
+globalThis.window = { localStorage: { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) } }
+const server = await createServer({ configFile: false, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'silent' })
+try {
+  const plan = await server.ssrLoadModule('/src/ai/sleepPlan.ts')
+  const store = await server.ssrLoadModule('/src/lib/healthStore.ts')
+  const conversation = await server.ssrLoadModule('/src/lib/conversationRecord.ts')
+  const nights = Array.from({ length: 7 }, (_, index) => ({
+    date: `2026-09-${String(index + 20).padStart(2, '0')}`, bedTime: '00:30', wakeTime: '07:00',
+    source: 'demo', updatedAt: '2026-09-27', simulatedFields: ['bedTime', 'wakeTime'],
+  }))
+  const early = plan.suggestSleepPlan(nights, { wakeConstraint: '07:00', barrier: '使用手机' })
+  assert.equal(early.target, '00:15', 'short sleep window receives a gradual initial suggestion')
+  assert.match(early.action, /手机/)
+  assert.equal(plan.suggestSleepPlan(nights, { wakeConstraint: '09:00' }).target, '00:30', 'different constraints produce different goals')
+  assert.equal(plan.suggestSleepPlan(nights, { wakeConstraint: '07:00', acceptedTarget: '00:30', acceptedAt: '2026-09-19T09:00:00+08:00' }).nextTarget, '00:15', 'a week of post-confirmation records can prompt the next goal')
+  assert.equal(plan.suggestSleepPlan(nights, { wakeConstraint: '07:00', acceptedTarget: '00:30', acceptedAt: '2026-09-24T09:00:00+08:00' }).nextTarget, null, 'history before confirmation cannot trigger adjustment')
+  assert.equal(plan.suggestSleepPlan(nights.slice(0, 2)).target, null, 'insufficient data cannot produce an exact goal')
+  assert.equal(plan.sleepPreparationTime('00:15'), '23:15', 'preparation time crosses midnight')
+  assert.equal(plan.sleepPreparationTime(null), null, 'missing goal has no preparation time')
+  assert.equal(plan.preparationDue('00:30', new Date('2026-09-26T23:40:00')), true, 'preparation appears before a post-midnight target')
+  assert.equal(plan.preparationDue('00:30', new Date('2026-09-27T00:10:00')), false, 'no reminder is sent after midnight')
+  assert.equal(plan.preparationDue('23:30', new Date('2026-09-26T23:40:00')), false, 'no reminder after the target')
+  assert.equal(plan.morningFeedbackDue('07:00', new Date('2026-09-26T06:50:00')), false, 'do not ask before waking')
+  assert.equal(plan.morningFeedbackDue('07:00', new Date('2026-09-26T08:00:00')), true, 'ask after waking')
+  assert.equal(plan.morningFeedbackDue('07:00', new Date('2026-09-26T21:00:00')), false, 'do not prompt at night')
+  const twoWeeks = Array.from({ length: 14 }, (_, index) => ({ date: `2026-09-${String(index + 13).padStart(2, '0')}`, bedTime: '00:30', wakeTime: '07:00', source: 'demo', updatedAt: '2026-09-27', simulatedFields: ['bedTime', 'wakeTime'] }))
+  assert.equal(plan.twoWeekSleepSummary(twoWeeks, '2026-09-26').personalNights, 0, 'demo samples never count as a personal model')
+  assert.equal(plan.twoWeekSleepSummary(twoWeeks, '2026-09-26', [], [{ date: '2026-09-26', skipped: false }, { date: '2026-09-25', skipped: true }, { date: '2026-09-26', skipped: false }]).reviewedMornings, 1, 'confirmed mornings count once while skipped days do not count')
+  assert.equal(plan.twoWeekSleepSummary(twoWeeks, '2026-09-26').usualBedTime, '00:30', 'two-week demo summary remains inspectable')
+  assert.equal(plan.twoWeekSleepSummary(twoWeeks.slice(1), '2026-09-26').usualBedTime, null, 'less than fourteen nights cannot form a summary')
+  assert.equal(plan.twoWeekSleepSummary(twoWeeks.map(({ simulatedFields: _fields, ...row }) => ({ ...row, source: 'manual' })), '2026-09-26').personalNights, 14, 'confirmed personal observations can complete the model')
+  assert.equal(plan.sleepConflict('23:50', '00:40'), true, 'clock comparison crosses midnight')
+  assert.equal(plan.sleepConflict('23:50', '00:10'), false)
+  assert.equal(conversation.parseConversationRecord('昨晚大约 00:40 入睡').bedTime, '00:40')
+  assert.equal(conversation.parseConversationRecord('记录昨晚睡前刷手机').sleepBarrier, '使用手机')
+  assert.equal(conversation.parseConversationRecord('记录昨晚睡前没刷手机').sleepBarrier, undefined, 'negated behavior must not be inferred')
+  assert.equal(plan.suggestSleepPlan([...nights.slice(0, 6), { ...nights[6], sleepBarrier: '到了时间不困' }], { barrier: '使用手机' }).action.includes('不强迫'), true, 'new feedback changes the next action')
+  const pending = [{ date: nights[6].date, deviceTime: '00:30', reportedTime: '01:30', confirmations: 1, status: '待再次核对', firstConfirmedAt: '2026-09-27T09:00:00+08:00' }]
+  assert.equal(plan.sleepPlanProgress(nights, '00:30', pending).count, 6, 'disputed night is withheld from progress')
+  assert.equal(plan.sleepPlanProgress(nights, '00:30', [{ ...pending[0], confirmations: 2, status: '尊重本人反馈' }]).count, 7, 'after second confirmation the report is respected')
+  store.setSleepPreferences({ wakeConstraint: '07:00', barrier: '使用手机' })
+  assert.equal(store.getHealthState().sleepPreferences.wakeConstraint, '07:00')
+  const date = store.localDate()
+  store.saveDailyRecord(date, { sleepBarrier: '到了时间不困' })
+  assert.equal(store.getHealthState().records.find((record) => record.date === date).sleepBarrier, '到了时间不困')
+  assert.throws(() => store.saveDailyRecord(date, { sleepBarrier: '未定义阻碍' }))
+  store.recordSleepConflict({ date, deviceTime: '00:30', reportedTime: '01:30' })
+  assert.equal(store.getHealthState().sleepConflicts[0].confirmations, 1)
+  store.confirmSleepConflict(date)
+  assert.equal(store.getHealthState().sleepConflicts[0].status, '尊重本人反馈')
+  assert.equal(JSON.parse(values.get('pha.health.v2')).sleepConflicts[0].confirmations, 2, 'confirmation persists')
+  store.markSleepPreparation(date)
+  assert.equal(store.getHealthState().sleepRoutine.preparationDoneOn, date)
+  store.markMorningFeedback(date, true)
+  assert.equal(JSON.parse(values.get('pha.health.v2')).sleepRoutine.morningFeedbackSkipped, true, 'skipped morning question persists')
+  store.markMorningFeedback(date, false)
+  assert.deepEqual(store.getHealthState().sleepRoutine.morningFeedbackHistory.at(-1), { date, skipped: false }, 'changing the response updates one dated feedback entry')
+  assert.equal(store.getHealthState().sleepRoutine.morningFeedbackHistory.filter((item) => item.date === date).length, 1, 'one day cannot inflate feedback progress')
+  const { default: Home } = await server.ssrLoadModule('/src/pages/PersonalHome.tsx')
+  const render = (Page) => renderToStaticMarkup(React.createElement(MemoryRouter, null, React.createElement(Page)))
+  assert.match(render(Home), /今晚的入睡目标/)
+  assert.match(render(Home), /睡前提前提醒/)
+  assert.match(render(Home), /至少两周，形成初步模型/)
+  assert.match(render(Home), /应用关闭后的主动推送和真实设备数据待接入/)
+  console.log('legacy sleep plan: personalization, midnight times, source conflict and persistence checks passed')
+} finally {
+  await server.close()
+}

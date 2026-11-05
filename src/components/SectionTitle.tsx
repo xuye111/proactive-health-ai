@@ -13,7 +13,7 @@ export function SectionTitle({ title, hint, action, children }: SectionTitleProp
   return (
     <div className="mb-2 flex items-end justify-between gap-3 px-1">
       <div className="min-w-0">
-        <h2 className="text-[13px] font-semibold tracking-wide text-ink-soft">{title}</h2>
+        <h2 className="text-[15px] font-semibold tracking-tight text-ink">{title}</h2>
         {hint !== undefined && <p className="mt-0.5 text-[11px] text-muted">{hint}</p>}
       </div>
       {action !== undefined ? (

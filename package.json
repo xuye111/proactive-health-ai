@@ -1,7 +1,7 @@
 {
   "name": "proactive-health-ai",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "eval": "node scripts/run-eval.mjs",
+    "check:v2": "node scripts/check-health-store.mjs && node scripts/check-health-score.mjs && node scripts/check-personal-review.mjs && node scripts/check-follow-ups.mjs && node scripts/check-user-journey.mjs && node scripts/check-solutions.mjs && node scripts/check-mock-orders.mjs && node scripts/check-shop-routes.mjs && node scripts/check-sleep-plan.mjs && node scripts/check-gout-app.mjs",
     "eval:typecheck": "tsc --noEmit",
     "generate:mock": "node scripts/generate-mock-data.mjs",
     "icons": "python3 scripts/make_icons.py"

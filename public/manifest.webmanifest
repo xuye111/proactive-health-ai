@@ -1,7 +1,7 @@
 {
-  "name": "小满 · 主动健康",
+  "name": "小满 · 痛风随访",
   "short_name": "小满",
-  "description": "面向个人长期健康管理场景的主动健康智能体",
+  "description": "记录痛风复诊复查与报告进度",
   "lang": "zh-CN",
   "start_url": "/",
   "scope": "/",

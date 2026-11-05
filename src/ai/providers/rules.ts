@@ -80,6 +80,16 @@ const pct = (value: number): string => `${Math.round(value)}%`
 
 const INTENTS: Intent[] = [
   {
+    id: 'hrv-boundary',
+    keywords: ['心率变异性', 'HRV', 'hrv'],
+    build: () => ({
+      level: 'information',
+      answer: '心率变异性不在当前覆盖的指标范围内，单凭这次读数不能在这里判断是否正常。请带着测量记录咨询医生。',
+      evidence: ['能力边界：当前没有心率变异性的个人基线和经过医学复核的解释规则'],
+      reasoning: '指标术语优先匹配，避免被「心率」误路由到血压解释。',
+    }),
+  },
+  {
     id: 'pressure',
     keywords: ['血压', '高血压', '心率'],
     build: (context) => ({
@@ -138,6 +148,17 @@ const INTENTS: Intent[] = [
       ],
       citations: ['sleep', 'stress'],
       reasoning: '疲劳是多因素叠加，给解释与就医阈值，不给结论。',
+    }),
+  },
+  {
+    id: 'night-waking',
+    keywords: ['半夜醒', '夜里醒', '夜间醒', '凌晨醒'],
+    build: (context) => ({
+      level: 'lifestyle',
+      answer: `${FOLLOW_UP_OUTCOMES['night-waking'].lead}今天先试着固定起床时间，并记录夜间醒来的情况。`,
+      evidence: [`今日睡眠 ${context.recent.sleepHours} 小时`, `个人基线 ${context.baseline.sleepHours.toFixed(1)} 小时`],
+      citations: ['sleep'],
+      reasoning: '夜间醒来优先复用追问反馈的行动建议。',
     }),
   },
   {
@@ -218,7 +239,10 @@ function decideAnswer(context: HealthContext, question: string): AgentDecision {
     }
   }
 
-  const intent = INTENTS.find((item) => item.keywords.some((keyword) => question.includes(keyword)))
+  const intent = INTENTS.find((item) =>
+    item.keywords.some((keyword) => question.includes(keyword)) ||
+    (item.id === 'night-waking' && /(半夜|夜里|夜间|凌晨).{0,8}醒/.test(question)),
+  )
   if (intent !== undefined) {
     return { ...intent.build(context), reasoning: intent.build(context).reasoning }
   }

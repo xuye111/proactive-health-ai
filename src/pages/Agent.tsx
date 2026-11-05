@@ -1,377 +1,143 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { answerGoutChat, type GoutChatAction } from '../ai/goutChat'
+import { goutPrompt, isGoutFollowUp } from '../ai/goutFollowUp'
+import { goutKnowledgeById } from '../ai/goutKnowledge'
 import { AppBar } from '../components/AppBar'
-import { AssistantAvatar } from '../components/AssistantAvatar'
-import { StageNotice } from '../components/StageNotice'
-import { TracePanel } from '../components/TracePanel'
-import { IconChevronRight } from '../components/icons'
-import insights from '../data/insights.json'
-import {
-  ASK_SUGGESTIONS,
-  LEVEL_LABEL,
-  askKeyFor,
-  healthEvidence,
-  useAnswerView,
-  useDailyRun,
-  useTodayPlan,
-} from '../lib/agentRules'
+import { IconSparkle } from '../components/icons'
 import { ASSISTANT_NAME } from '../lib/assistant'
-import {
-  askQuestion,
-  resetFeedback,
-  setAnswers,
-  submitAnswers,
-  useAgentState,
-} from '../lib/agentStore'
-import type { FollowUpOption, OutputLevel } from '../types'
+import { recordPersonalSafety, useFollowUps } from '../lib/followUpStore'
+import { localDate, localTimestamp, useHealthState } from '../lib/healthStore'
 
-const OPTIONS = insights.followUp.options as FollowUpOption[]
-const EXCLUSIVE_IDS = new Set(OPTIONS.filter((option) => option.exclusive === true).map((o) => o.id))
-const LABELS = new Map(OPTIONS.map((option) => [option.id, option.label]))
-
-const LEVEL_STYLE: Record<OutputLevel, string> = {
-  lifestyle: 'bg-brand-soft/70 text-brand-deep',
-  information: 'bg-calm text-ink-soft',
-  alert: 'bg-warn-soft text-warn',
-  escalation: 'bg-danger/10 text-danger',
+type Turn = {
+  text: string
+  answer: string
+  evidence: string[]
+  escalation: boolean
+  knowledgeId?: string
+  action?: GoutChatAction
 }
+const chatKey = 'pha.xiaoman.goutChat.v1'
+const suggestions = [
+  { label: '查复查进度', question: '我的复查进度是什么？' },
+  { label: '录入报告', question: '我想录入化验报告' },
+  { label: '发作后为什么复诊？', question: '发作缓解后为什么还要复诊？' },
+]
+const taskLink = (itemId?: string) => `/record?view=tasks${itemId ? `&item=${encodeURIComponent(itemId)}` : ''}`
+const avatarClass = 'flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-deep'
+const taskLinkClass = 'inline-flex min-h-11 items-center text-[13px] font-medium text-brand-deep'
 
-/** AI 侧消息：头像标明是谁在说，标签标明这条是主动发起还是要你确认。 */
-function AssistantMessage({
-  mode,
-  title,
-  tone = 'default',
-  children,
-}: {
-  mode: '主动' | '你发起'
-  title: string
-  /** escalation 类回答不能看起来像普通建议，用独立的危险态样式。 */
-  tone?: 'default' | 'danger'
-  children: React.ReactNode
-}) {
-  return (
-    <div className="flex gap-2.5">
-      <AssistantAvatar size={28} className="mt-0.5" />
-      <div
-        className={`min-w-0 flex-1 space-y-2 rounded-2xl rounded-tl-md border px-3.5 py-3 ${
-          tone === 'danger' ? 'border-danger/30 bg-danger/5' : 'border-line bg-surface'
-        }`}
-      >
-        <p className="flex items-center gap-1.5 text-[10px] text-muted">
-          <span
-            className={`rounded px-1.5 py-0.5 ${
-              mode === '主动' ? 'bg-brand-soft/70 text-brand-deep' : 'bg-canvas text-ink-soft'
-            }`}
-          >
-            {mode}
-          </span>
-          {title}
-        </p>
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function UserMessage({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex justify-end">
-      <p className="max-w-[85%] rounded-2xl rounded-br-md bg-brand px-3.5 py-2.5 text-[13px] leading-relaxed text-white">
-        {children}
-      </p>
-    </div>
-  )
-}
-
-/** 一条用户提问：独立跑一次问答流水线，并把它的判断过程挂在自己下面。 */
-function AskedAnswer({ question }: { question: string }) {
-  const view = useAnswerView(question)
-  return (
-    <div className="space-y-3">
-      <UserMessage>{question}</UserMessage>
-      <AssistantMessage
-        mode="你发起"
-        title={view.level === 'escalation' ? '这条不是建议，请先处理' : '结合今天的记录回答'}
-        tone={view.level === 'escalation' ? 'danger' : 'default'}
-      >
-        <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] ${LEVEL_STYLE[view.level]}`}>
-          {LEVEL_LABEL[view.level]}
-        </span>
-        <p className="text-[13.5px] leading-relaxed text-ink">{view.text}</p>
-        {view.evidence.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {view.evidence.map((item) => (
-              <span key={item} className="rounded-md bg-canvas px-2 py-0.5 text-[11px] text-ink-soft">
-                {item}
-              </span>
-            ))}
-          </div>
-        )}
-        <p className="text-[10px] text-muted">已记入今日经历，下次会优先跟进这个问题。</p>
-        <TracePanel trace={view.trace} />
-      </AssistantMessage>
-    </div>
-  )
+function loadTurns(): Turn[] {
+  try {
+    const value: unknown = JSON.parse(window.localStorage.getItem(chatKey) ?? '[]')
+    return Array.isArray(value) ? value.filter((turn): turn is Turn =>
+      typeof turn?.text === 'string' && typeof turn?.answer === 'string' &&
+      Array.isArray(turn?.evidence) && typeof turn?.escalation === 'boolean').slice(-30) : []
+  } catch { return [] }
 }
 
 export default function Agent() {
-  const { answers, submitted, asked } = useAgentState()
-  const interpretation = useTodayPlan()
-  const dailyRun = useDailyRun()
-  // 开场事实直接取自信号层：界面展示的依据与判断用的依据是同一批
-  const evidence = healthEvidence(dailyRun.run?.trace.signals ?? [])
+  const { search } = useLocation()
+  const focusedId = new URLSearchParams(search).get('item')
+  const followUps = useFollowUps()
+  const health = useHealthState()
   const [draft, setDraft] = useState('')
+  const [turns, setTurns] = useState<Turn[]>(loadTurns)
+  const [now, setNow] = useState(() => new Date())
+  const end = useRef<HTMLDivElement>(null)
+  const sent = useRef(false)
+  const date = localDate(now)
+  const hour = now.getHours()
+  const quiet = health.remindersPaused || hour >= 22 || hour < 8
+  const goutItems = followUps.filter(isGoutFollowUp)
+  const focused = goutItems.find((item) => item.id === focusedId)
+  const safetyItems = followUps.filter((item) => item.status === '建议就医' && !isGoutFollowUp(item))
+  const candidate = focused ?? goutItems.filter((item) => item.status !== '已结束' && item.status !== '建议就医' && item.nextReviewAt)
+    .sort((a, b) => (a.nextReviewAt ?? '').localeCompare(b.nextReviewAt ?? ''))[0]
+  const proactivePrompt = candidate && !quiet && safetyItems.length === 0 ? goutPrompt(candidate, date) : null
 
-  const send = (text: string) => {
-    const value = text.trim()
-    if (value === '') return
-    askQuestion({ key: askKeyFor(value), text: value })
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 60_000)
+    return () => window.clearInterval(timer)
+  }, [])
+  useEffect(() => {
+    try { window.localStorage.setItem(chatKey, JSON.stringify(turns)) } catch { /* 本机存储不可用时仍可对话 */ }
+    if (sent.current) {
+      end.current?.scrollIntoView({ block: 'nearest' })
+      sent.current = false
+    }
+  }, [turns])
+
+  const send = (input = draft) => {
+    const text = input.trim().slice(0, 500)
+    if (!text) return
+    const reply = answerGoutChat(text, followUps, focusedId)
+    if (reply.safety) recordPersonalSafety(reply.safety, localTimestamp())
+    const { answer, evidence, escalation, knowledgeId, action } = reply
+    sent.current = true
+    setTurns((current) => [...current, { text, answer, evidence, escalation, knowledgeId, action }].slice(-30))
     setDraft('')
   }
 
-  const askedKeys = new Set(asked.map((entry) => entry.key))
-  const suggestions = ASK_SUGGESTIONS.filter((item) => !askedKeys.has(item.id))
-  const hasThread = submitted || asked.length > 0
-
-  const toggle = (option: FollowUpOption) => {
-    if (answers.includes(option.id)) {
-      setAnswers(answers.filter((id) => id !== option.id))
-      return
-    }
-    if (option.exclusive === true) {
-      setAnswers([option.id])
-      return
-    }
-    setAnswers([...answers.filter((id) => !EXCLUSIVE_IDS.has(id)), option.id])
-  }
-
-  return (
-    <>
-      <AppBar title={ASSISTANT_NAME} subtitle="你可以等我问，也可以直接问我" />
-
+  return <>
+    <AppBar title={ASSISTANT_NAME} subtitle="痛风管理助手" right={turns.length > 0 &&
+      <button type="button" onClick={() => setTurns([])} className="min-h-11 px-2 text-[12px] font-medium text-brand-deep">清空对话</button>
+    } />
+    <div className="agent-chat">
       <div className="space-y-4 px-4 pt-4">
-        <StageNotice>
-          第一阶段：{ASSISTANT_NAME}的判断与回答都由规则表算出（非 LLM），所以两条路径的行为都是真实发生的，可以反复走一遍。
-        </StageNotice>
-
-        {/* 两条路径：让「兼顾」这件事在界面上看得见 */}
-        <section className="grid grid-cols-2 gap-2.5">
-          <div className="rounded-2xl border border-brand/25 bg-brand-soft/25 px-3 py-2.5">
-            <p className="text-[12px] font-medium text-brand-deep">{ASSISTANT_NAME}主动</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-ink-soft">数据有变化时先开口，追问后更新判断</p>
+        {safetyItems.length > 0 && <section role="alert" className="rounded-xl border border-danger/40 bg-danger/5 p-4 text-[13px] text-danger">
+          <p className="font-medium">此前提问触发了就医提示</p>
+          {safetyItems.map((item) => <p key={item.id} className="mt-2">{item.topic}：{item.evidence.at(-1)?.details.join('；') || '请联系专业人员评估。'}</p>)}
+        </section>}
+        {focused && <div className="flex flex-wrap items-center justify-between gap-x-2 rounded-xl bg-brand-soft/55 px-3 text-[12px] text-ink-soft">
+          <span className="py-2">当前事项 · {focused.topic}{focused.gout.dueOn ? ` · ${focused.gout.dueOn}` : ''}</span>
+          <Link to={taskLink(focused.id)} className={taskLinkClass}>查看任务</Link>
+        </div>}
+        {(turns.length === 0 || proactivePrompt) && <div className="flex items-start gap-2">
+          <span className={avatarClass}><IconSparkle className="size-5" aria-hidden="true" /></span>
+          <div className="min-w-0 rounded-2xl rounded-tl-sm bg-surface px-4 py-3 text-[14px] leading-relaxed text-ink">
+            <p>{proactivePrompt || '你好，我是小满。你可以问我复查进度，也可以聊聊痛风管理。'}</p>
+            {proactivePrompt && candidate && <Link to={taskLink(candidate.id)} className={taskLinkClass}>去更新这项任务 →</Link>}
           </div>
-          <div className="rounded-2xl border border-line bg-surface px-3 py-2.5">
-            <p className="text-[12px] font-medium text-ink">你发起</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-ink-soft">随时提问，回答基于同一份上下文</p>
-          </div>
-        </section>
-
-        {/* 小满已经了解：两条路径共用同一份状态 */}
-        <section className="card p-3.5">
-          <div className="flex items-center gap-2.5">
-            <AssistantAvatar size={32} online />
-            <div className="min-w-0 flex-1">
-              <p className="text-[12px] font-medium text-ink-soft">{ASSISTANT_NAME}已经了解</p>
-              <p className="text-[10px] text-muted">睡眠 / 活动 / 饮食 / 主观状态</p>
-            </div>
-            {submitted && <span className="shrink-0 text-[10px] text-brand">已更新</span>}
-          </div>
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {interpretation.understanding.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-brand/25 bg-brand-soft/60 px-2.5 py-1 text-[12px] text-brand-deep"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        <div className="space-y-3">
-          {/* 主动路径一：小满先摆事实 */}
-          <AssistantMessage mode="主动" title="先说我现在看到的">
-            <div className="flex flex-wrap gap-1.5">
-              {evidence.map((item) => (
-                <span key={item} className="rounded-md bg-canvas px-2 py-0.5 text-[11px] text-ink-soft">
-                  {item}
-                </span>
-              ))}
-            </div>
-            <p className="text-[13.5px] leading-relaxed text-ink">{insights.finding.summary}</p>
-            <p className="text-[12px] leading-relaxed text-ink-soft">{insights.finding.suggestion}</p>
-          </AssistantMessage>
-
-          {/* 主动路径二：追问 → 用户反馈 → 更新判断 */}
-          {!submitted ? (
-            <AssistantMessage mode="主动" title="需要你确认">
-              <p className="text-[13.5px] leading-relaxed text-ink">{insights.followUp.question}</p>
-              <div className="space-y-1.5" role="group" aria-label="最近出现的情况">
-                {OPTIONS.map((option) => {
-                  const selected = answers.includes(option.id)
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      aria-pressed={selected}
-                      onClick={() => toggle(option)}
-                      className={`flex w-full items-center gap-2.5 rounded-xl border px-3 py-2 text-left text-[13px] transition-colors ${
-                        selected
-                          ? 'border-brand bg-brand-soft/50 text-brand-deep'
-                          : 'border-line bg-surface text-ink-soft'
-                      }`}
-                    >
-                      <span
-                        className={`flex size-[17px] shrink-0 items-center justify-center rounded-[6px] border ${
-                          selected ? 'border-brand bg-brand text-white' : 'border-line'
-                        }`}
-                      >
-                        {selected && (
-                          <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M5 12.5l4.5 4.5L19 7.5" />
-                          </svg>
-                        )}
-                      </span>
-                      {option.label}
-                    </button>
-                  )
-                })}
-              </div>
-              <button
-                type="button"
-                disabled={answers.length === 0}
-                onClick={submitAnswers}
-                className="w-full rounded-xl bg-brand py-2.5 text-[14px] font-medium text-white transition-opacity disabled:opacity-40"
-              >
-                提交反馈
-              </button>
-              <p className="text-[10px] text-muted">可多选；选择「没有明显感觉」会取消其它选项</p>
-            </AssistantMessage>
-          ) : (
-            <>
-              <UserMessage>
-                {answers.map((id) => LABELS.get(id) ?? id).join('、')}
-              </UserMessage>
-
-              <AssistantMessage mode="主动" title="更新后的判断">
-                <p className="text-[13.5px] leading-relaxed text-ink">{interpretation.judgment}</p>
-
-                {interpretation.changes.length > 0 && (
-                  <div className="rounded-xl bg-canvas px-3 py-2">
-                    <p className="text-[11px] font-medium text-ink-soft">你的反馈改变了什么</p>
-                    <ul className="mt-1 space-y-1">
-                      {interpretation.changes.map((change) => (
-                        <li key={change} className="text-[12px] leading-snug text-ink">
-                          · {change}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                <p className="text-[11px] leading-relaxed text-muted">
-                  已写入记忆：{interpretation.memoryNotes.join('；')}
-                </p>
-
-                <Link
-                  to="/record"
-                  className="flex items-center justify-between rounded-xl border border-line px-3 py-2 text-[13px] text-brand"
-                >
-                  查看更新后的今日行动（{interpretation.actions.length} 条）
-                  <IconChevronRight className="size-4" />
-                </Link>
-
-                <TracePanel trace={interpretation.trace} />
-              </AssistantMessage>
-            </>
+        </div>}
+        {turns.length === 0 && <div className="flex flex-wrap gap-2 pl-10" aria-label="快捷提问">
+          {suggestions.map(({ label, question }) =>
+            <button key={question} type="button" onClick={() => send(question)}
+              className="min-h-11 rounded-full border border-brand/20 bg-surface px-3 text-[12px] font-medium text-brand-deep">{label}</button>
           )}
-
-          {/* 自主路径：用户提问 → 基于同一上下文的回答 + 输出分级 + 判断过程 */}
-          {asked.map((entry) => (
-            <AskedAnswer key={`${entry.text}-${entry.key}`} question={entry.text} />
-          ))}
+        </div>}
+        <div role="log" aria-label="与小满的对话" className="space-y-4">
+          {turns.map((turn, index) => {
+            const source = typeof turn.knowledgeId === 'string' ? goutKnowledgeById(turn.knowledgeId)?.source : undefined
+            const action = !turn.escalation && turn.action?.kind === 'openTasks' ? turn.action : undefined
+            return <div key={index} className="space-y-3 text-[14px] leading-relaxed">
+              <p className="ml-auto w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-tr-sm bg-brand px-4 py-2 text-white">{turn.text}</p>
+              <div className="flex items-start gap-2">
+                <span className={avatarClass}><IconSparkle className="size-5" aria-hidden="true" /></span>
+                <div className={`min-w-0 rounded-2xl rounded-tl-sm px-4 py-3 ${turn.escalation ? 'border border-danger/30 bg-danger/5 text-danger' : 'bg-surface text-ink'}`}>
+                  <p className="whitespace-pre-wrap break-words">{turn.answer}</p>
+                  {action && <Link to={taskLink(typeof action.itemId === 'string' ? action.itemId : undefined)} className={taskLinkClass}>
+                    {action.itemId ? '查看对应任务' : '打开随访任务'} →
+                  </Link>}
+                  {source && <a href={source.url} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center text-[12px] text-brand-deep underline underline-offset-2">{source.label}</a>}
+                  {turn.evidence.length > 0 && <details className="mt-2 text-[12px] text-ink-soft">
+                    <summary className="cursor-pointer">查看依据</summary>
+                    <ul className="mt-1">{turn.evidence.map((entry, i) => <li key={i}>· {entry}</li>)}</ul>
+                  </details>}
+                </div>
+              </div>
+            </div>
+          })}
         </div>
-
-        {/* 快捷提问：规则实现答不了任意问题，就把能答的摆出来 */}
-        {suggestions.length > 0 && (
-          <section>
-            <p className="mb-2 px-1 text-[11px] text-muted">可以试着问{ASSISTANT_NAME}（也可以直接输入）</p>
-            <div className="flex flex-wrap gap-2">
-              {suggestions.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => send(item.label)}
-                  className="rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-soft"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <details className="card px-4 py-3">
-          <summary className="cursor-pointer text-[12px] font-medium text-ink-soft">
-            为什么不做成通用聊天窗口
-          </summary>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-[11px] text-muted">传统健康问答</p>
-              <ol className="mt-1.5 space-y-1 text-[11px] leading-snug text-ink-soft">
-                <li>1. 用户提问</li>
-                <li>2. 助手回答</li>
-                <li>3. 对话结束</li>
-              </ol>
-            </div>
-            <div>
-              <p className="text-[11px] text-brand-deep">主动健康助手</p>
-              <ol className="mt-1.5 space-y-1 text-[11px] leading-snug text-ink-soft">
-                <li>1. 自己发现变化</li>
-                <li>2. 主动追问</li>
-                <li>3. 用户反馈或提问</li>
-                <li>4. 更新判断与计划</li>
-              </ol>
-            </div>
-          </div>
-        </details>
-
-        {hasThread && (
-          <button
-            type="button"
-            onClick={resetFeedback}
-            className="w-full rounded-xl border border-line bg-surface py-2.5 text-[13px] text-ink-soft"
-          >
-            清空这段对话（演示用）
-          </button>
-        )}
       </div>
-
-      {/* 自主入口：sticky 在底部导航之上 */}
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          send(draft)
-        }}
-        className="composer-dock sticky z-20 mt-4 border-t border-line bg-surface/95 px-4 py-2.5 backdrop-blur-md"
-      >
-        <div className="flex items-center gap-2">
-          <input
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            placeholder={`问问${ASSISTANT_NAME}，比如：今天适合运动吗`}
-            aria-label={`向${ASSISTANT_NAME}提问`}
-            className="min-w-0 flex-1 rounded-full border border-line bg-canvas px-3.5 py-2 text-[13px] outline-none placeholder:text-muted focus:border-brand"
-          />
-          <button
-            type="submit"
-            disabled={draft.trim() === ''}
-            className="shrink-0 rounded-full bg-brand px-4 py-2 text-[13px] font-medium text-white transition-opacity disabled:opacity-40"
-          >
-            发送
-          </button>
-        </div>
+      <div ref={end} className="agent-chat-end" />
+      <form onSubmit={(event) => { event.preventDefault(); send() }} className="agent-chat-composer flex items-end gap-2 border-t border-line px-4 py-3">
+        <textarea aria-label="向小满提问" value={draft} onChange={(event) => setDraft(event.target.value)} rows={1} maxLength={500}
+          placeholder="跟小满聊聊…" className="min-h-11 min-w-0 flex-1 resize-none rounded-2xl border border-line bg-surface px-3 py-2.5 text-base text-ink" />
+        <button type="submit" disabled={!draft.trim()}
+          className="min-h-11 rounded-2xl bg-brand px-4 text-[14px] font-medium text-white disabled:opacity-45">发送</button>
       </form>
-    </>
-  )
+    </div>
+  </>
 }

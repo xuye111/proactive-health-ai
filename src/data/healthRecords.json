@@ -7,6 +7,9 @@
     "wakeTime": "07:21",
     "steps": 5200,
     "activeMinutes": 27,
+    "restingHeartRate": 63,
+    "bloodPressureSystolic": 112,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -27,6 +30,9 @@
     "wakeTime": "07:20",
     "steps": 5791,
     "activeMinutes": 30,
+    "restingHeartRate": 66,
+    "bloodPressureSystolic": 117,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -47,6 +53,9 @@
     "wakeTime": "07:19",
     "steps": 6382,
     "activeMinutes": 34,
+    "restingHeartRate": 69,
+    "bloodPressureSystolic": 122,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -67,6 +76,9 @@
     "wakeTime": "08:18",
     "steps": 6973,
     "activeMinutes": 37,
+    "restingHeartRate": 64,
+    "bloodPressureSystolic": 114,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": false,
       "lunch": true,
@@ -87,6 +99,9 @@
     "wakeTime": "07:16",
     "steps": 7564,
     "activeMinutes": 40,
+    "restingHeartRate": 67,
+    "bloodPressureSystolic": 119,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -107,6 +122,9 @@
     "wakeTime": "07:15",
     "steps": 5255,
     "activeMinutes": 28,
+    "restingHeartRate": 70,
+    "bloodPressureSystolic": 124,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -127,6 +145,9 @@
     "wakeTime": "08:14",
     "steps": 5846,
     "activeMinutes": 31,
+    "restingHeartRate": 65,
+    "bloodPressureSystolic": 116,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -147,6 +168,9 @@
     "wakeTime": "07:55",
     "steps": 6437,
     "activeMinutes": 34,
+    "restingHeartRate": 68,
+    "bloodPressureSystolic": 121,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -167,6 +191,9 @@
     "wakeTime": "07:29",
     "steps": 7028,
     "activeMinutes": 37,
+    "restingHeartRate": 63,
+    "bloodPressureSystolic": 113,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -187,6 +214,9 @@
     "wakeTime": "07:10",
     "steps": 7619,
     "activeMinutes": 40,
+    "restingHeartRate": 66,
+    "bloodPressureSystolic": 118,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -207,6 +237,9 @@
     "wakeTime": "07:57",
     "steps": 5310,
     "activeMinutes": 28,
+    "restingHeartRate": 69,
+    "bloodPressureSystolic": 123,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": false,
       "lunch": true,
@@ -227,6 +260,9 @@
     "wakeTime": "07:25",
     "steps": 5901,
     "activeMinutes": 31,
+    "restingHeartRate": 64,
+    "bloodPressureSystolic": 115,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -247,6 +283,9 @@
     "wakeTime": "07:06",
     "steps": 6492,
     "activeMinutes": 34,
+    "restingHeartRate": 67,
+    "bloodPressureSystolic": 120,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -267,6 +306,9 @@
     "wakeTime": "07:41",
     "steps": 7083,
     "activeMinutes": 37,
+    "restingHeartRate": 70,
+    "bloodPressureSystolic": 112,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -287,6 +329,9 @@
     "wakeTime": "08:22",
     "steps": 7674,
     "activeMinutes": 40,
+    "restingHeartRate": 65,
+    "bloodPressureSystolic": 117,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -307,6 +352,9 @@
     "wakeTime": "07:02",
     "steps": 5365,
     "activeMinutes": 28,
+    "restingHeartRate": 68,
+    "bloodPressureSystolic": 122,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -327,6 +375,9 @@
     "wakeTime": "07:25",
     "steps": 5956,
     "activeMinutes": 31,
+    "restingHeartRate": 63,
+    "bloodPressureSystolic": 114,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -347,6 +398,9 @@
     "wakeTime": "08:00",
     "steps": 6547,
     "activeMinutes": 34,
+    "restingHeartRate": 66,
+    "bloodPressureSystolic": 119,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": false,
       "lunch": true,
@@ -367,6 +421,9 @@
     "wakeTime": "07:10",
     "steps": 7138,
     "activeMinutes": 38,
+    "restingHeartRate": 69,
+    "bloodPressureSystolic": 124,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -387,6 +444,9 @@
     "wakeTime": "06:51",
     "steps": 4829,
     "activeMinutes": 25,
+    "restingHeartRate": 64,
+    "bloodPressureSystolic": 116,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -407,6 +467,9 @@
     "wakeTime": "07:56",
     "steps": 5420,
     "activeMinutes": 29,
+    "restingHeartRate": 67,
+    "bloodPressureSystolic": 121,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -427,6 +490,9 @@
     "wakeTime": "07:55",
     "steps": 6011,
     "activeMinutes": 32,
+    "restingHeartRate": 70,
+    "bloodPressureSystolic": 113,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -447,6 +513,9 @@
     "wakeTime": "07:17",
     "steps": 4620,
     "activeMinutes": 24,
+    "restingHeartRate": 65,
+    "bloodPressureSystolic": 118,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -467,6 +536,9 @@
     "wakeTime": "07:40",
     "steps": 4380,
     "activeMinutes": 23,
+    "restingHeartRate": 68,
+    "bloodPressureSystolic": 123,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -487,6 +559,9 @@
     "wakeTime": "07:33",
     "steps": 4510,
     "activeMinutes": 24,
+    "restingHeartRate": 63,
+    "bloodPressureSystolic": 115,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": false,
       "lunch": true,
@@ -507,6 +582,9 @@
     "wakeTime": "08:02",
     "steps": 4460,
     "activeMinutes": 23,
+    "restingHeartRate": 66,
+    "bloodPressureSystolic": 120,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -527,6 +605,9 @@
     "wakeTime": "07:22",
     "steps": 4550,
     "activeMinutes": 24,
+    "restingHeartRate": 69,
+    "bloodPressureSystolic": 112,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -547,6 +628,9 @@
     "wakeTime": "07:02",
     "steps": 4440,
     "activeMinutes": 23,
+    "restingHeartRate": 64,
+    "bloodPressureSystolic": 117,
+    "bloodPressureDiastolic": 72,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -567,6 +651,9 @@
     "wakeTime": "07:00",
     "steps": 4540,
     "activeMinutes": 24,
+    "restingHeartRate": 67,
+    "bloodPressureSystolic": 122,
+    "bloodPressureDiastolic": 75,
     "meals": {
       "breakfast": true,
       "lunch": true,
@@ -587,6 +674,9 @@
     "wakeTime": "07:16",
     "steps": 3241,
     "activeMinutes": 28,
+    "restingHeartRate": 70,
+    "bloodPressureSystolic": 114,
+    "bloodPressureDiastolic": 78,
     "meals": {
       "breakfast": true,
       "lunch": true,

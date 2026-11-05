@@ -1,5 +1,6 @@
 import rawRecords from '../data/healthRecords.json'
 import type { DailyRecord } from '../types'
+import type { DailyObservation, HealthState } from './healthStore'
 
 /** 30 天演示数据，按日期升序（方案 §17）。 */
 export const records: DailyRecord[] = rawRecords
@@ -68,6 +69,21 @@ export const greeting = (hour: number): string => {
   if (hour < 13) return '中午好'
   if (hour < 18) return '下午好'
   return '晚上好'
+}
+
+/** 本人模式最近 7 个日历日的目标执行情况，缺失数据不算未达标。 */
+export function personalGoalSummary(days: DailyObservation[], date: string, goals: HealthState['goals']) {
+  const end = Date.parse(`${date}T12:00:00Z`)
+  const window = days.filter((day) => {
+    const at = Date.parse(`${day.date}T12:00:00Z`)
+    return at <= end && at > end - 7 * 86400000
+  })
+  const sleep = window.filter((day) => typeof day.sleepHours === 'number')
+  const activity = window.filter((day) => typeof day.activeMinutes === 'number')
+  return {
+    sleep: { recorded: sleep.length, met: sleep.filter((day) => (day.sleepHours ?? 0) >= goals.sleepHours).length, target: goals.sleepHours },
+    activity: { recorded: activity.length, met: activity.filter((day) => (day.activeMinutes ?? 0) >= goals.activeMinutes).length, target: goals.activeMinutes },
+  }
 }
 
 /** 主观状态标签（1–5）。 */

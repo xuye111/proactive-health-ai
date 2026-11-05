@@ -68,6 +68,10 @@ for (const testCase of [...suite.cases, ...guardrailSuite.cases]) {
     console.error(`用例 ${testCase.id} 是提问类，但缺少 text 字段。`)
     process.exit(2)
   }
+  if (testCase.context !== undefined && (kind !== 'question' || !Array.isArray(testCase.context) || !testCase.context.every((item) => typeof item === 'string'))) {
+    console.error(`用例 ${testCase.id} 的 context 必须是提问类用例的字符串数组。`)
+    process.exit(2)
+  }
 }
 
 // provider 预检：llm 需要 LLM_API_KEY，缺 key 时给一句清晰提示，
@@ -279,7 +283,9 @@ function checkGuardrail(testCase, run) {
 const allBehavior = []
 for (const testCase of suite.cases) {
   try {
-    const run = await ai.runAgent(toInput(testCase.input), { providerId: providerArg })
+    const input = toInput(testCase.input)
+    if (testCase.context !== undefined) input.previousQuestions = testCase.context
+    const run = await ai.runAgent(input, { providerId: providerArg })
     const { assertions, preview } = checkBehavior(testCase, run)
     allBehavior.push({ testCase, assertions, preview, allOk: assertions.every((item) => item.ok) })
   } catch (error) {

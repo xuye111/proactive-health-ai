@@ -26,9 +26,9 @@ export const RED_FLAG_RULES: RedFlagRule[] = [
   {
     id: 'chest',
     label: '胸部症状',
-    any: ['胸痛', '胸口', '胸闷', '心口', '心悸'],
+    any: ['胸痛', '胸口', '胸闷', '心口', '心悸', 'chest pain', 'chest hurt', 'chest tightness'],
     escalationText:
-      '胸部不适需要当面评估，我不提供任何运动或生活方式建议。请尽快就医；如果疼痛持续、伴有出汗或呼吸困难，请直接去急诊。',
+      '胸部不适需要当面评估，我不提供任何运动或生活方式建议。请尽快就医；如果疼痛持续，或伴有头晕、出汗、呼吸困难，请直接去急诊。',
     evidence: ['来源：知识条目「运动 · 需要就医的情况」', '急症征兆优先于其它意图'],
   },
   {
@@ -87,7 +87,7 @@ export const RED_FLAG_RULES: RedFlagRule[] = [
 
 /** 命中的急症/越界规则；未命中返回 undefined。 */
 export function redFlagFor(text: string): RedFlagRule | undefined {
-  const normalized = text.trim()
+  const normalized = text.trim().toLowerCase()
   return RED_FLAG_RULES.find((rule) => {
     if (rule.any !== undefined && rule.any.some((keyword) => normalized.includes(keyword))) return true
     if (rule.all !== undefined) {

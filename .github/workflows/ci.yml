@@ -24,3 +24,6 @@ jobs:
 
       - name: 规则桩评测
         run: npm run eval
+
+      - name: 用户端闭环检查
+        run: npm run check:v2

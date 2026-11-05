@@ -7,6 +7,10 @@ export interface DailyRecord {
   wakeTime: string
   steps: number
   activeMinutes: number
+  /** 可选设备/手动观测；当前只展示，不参与生活状态分。 */
+  restingHeartRate?: number
+  bloodPressureSystolic?: number
+  bloodPressureDiastolic?: number
   meals: {
     breakfast: boolean
     lunch: boolean

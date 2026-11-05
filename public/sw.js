@@ -1,4 +1,4 @@
-// 主动健康 AI Agent — Service Worker
+// 小满痛风随访 — Service Worker
 //
 // 策略：
 //   - 导航请求：network-first，离线时回退到缓存的 index.html
@@ -6,7 +6,7 @@
 //
 // 发版时把 VERSION 递增，旧缓存会在 activate 阶段清掉。
 
-const VERSION = 'pha-v0.1.0'
+const VERSION = 'pha-v0.2.0'
 const SHELL_CACHE = `${VERSION}-shell`
 const ASSET_CACHE = `${VERSION}-assets`
 

@@ -2,6 +2,7 @@
   "entities": [
     { "id": "sleep_hours", "name": "睡眠时长", "type": "metric" },
     { "id": "bed_time", "name": "入睡时点", "type": "metric" },
+    { "id": "wake_time", "name": "起床约束", "type": "metric" },
     { "id": "steps", "name": "步数", "type": "metric" },
     { "id": "active_minutes", "name": "活动时间", "type": "metric" },
     { "id": "caffeine", "name": "咖啡因摄入", "type": "behavior" },
@@ -11,7 +12,8 @@
     { "id": "sleep_decline", "name": "睡眠下降", "type": "signal" },
     { "id": "activity_decline", "name": "活动下降", "type": "signal" },
     { "id": "personal_baseline", "name": "个人基线", "type": "concept" },
-    { "id": "sleep_goal", "name": "改善睡眠", "type": "goal" }
+    { "id": "sleep_guidance", "name": "睡眠健康依据", "type": "concept" },
+    { "id": "sleep_goal", "name": "稳定入睡目标", "type": "goal" }
   ],
   "relations": [
     { "from": "caffeine", "label": "推迟", "to": "bed_time", "source": "睡眠" },
@@ -25,6 +27,9 @@
     { "from": "activity_decline", "label": "同期出现", "to": "sleep_decline", "source": "趋势判断" },
     { "from": "sleep_decline", "label": "触发行动", "to": "sleep_goal", "source": "计划" },
     { "from": "caffeine", "label": "与目标冲突", "to": "sleep_goal", "source": "计划" },
+    { "from": "sleep_guidance", "label": "提供原则", "to": "sleep_goal", "source": "睡眠知识条目·建议原则" },
+    { "from": "personal_baseline", "label": "提供起点", "to": "sleep_goal", "source": "近 7 晚入睡记录" },
+    { "from": "wake_time", "label": "约束目标", "to": "sleep_goal", "source": "本人起床安排" },
     { "from": "active_minutes", "label": "计入", "to": "steps", "source": "运动" }
   ]
 }

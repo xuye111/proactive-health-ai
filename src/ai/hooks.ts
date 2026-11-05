@@ -33,6 +33,7 @@ const keyOf = (kind: string, input: AgentInput): string =>
     input.subjective,
     input.answers ?? [],
     input.question ?? '',
+    input.previousQuestions ?? [],
     input.memories.map((memory) => memory.id),
   ])
 
@@ -108,11 +109,11 @@ export function useDailyRun(): RunState {
 }
 
 /** 问答类：针对一个用户问题跑一次（组件级调用，每条问题一个组件）。 */
-export function useAnswerRun(question: string): RunState {
-  const { subjective, asked } = useAgentState()
+export function useAnswerRun(question: string, previousQuestions: string[] = []): RunState {
+  const { subjective } = useAgentState()
   const input = useMemo<AgentInput>(
-    () => ({ subjective, memories: recallCorpus(asked), question }),
-    [subjective, asked, question],
+    () => ({ subjective, memories: recallCorpus(previousQuestions.map((text) => ({ text }))), question, previousQuestions }),
+    [subjective, question, previousQuestions],
   )
   return useRun('answer', input)
 }
@@ -160,8 +161,8 @@ export interface AnswerView {
 }
 
 /** 视图模型：给页面消费的问答结果。 */
-export function useAnswerView(question: string): AnswerView {
-  const { run, status } = useAnswerRun(question)
+export function useAnswerView(question: string, previousQuestions: string[] = []): AnswerView {
+  const { run, status } = useAnswerRun(question, previousQuestions)
   return useMemo(() => {
     const decision = run?.decision
     return {

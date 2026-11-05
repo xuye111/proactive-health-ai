@@ -27,6 +27,8 @@ export interface AgentInput {
   answers?: string[]
   /** 问答类：用户问题原文。 */
   question?: string
+  /** 本次提问之前、按时间顺序排列的问题；只用于省略式追问。 */
+  previousQuestions?: string[]
 }
 
 export interface RunAgentOptions {
@@ -63,6 +65,12 @@ export async function runAgent(input: AgentInput, options: RunAgentOptions = {})
   const startedAt = now()
   const stages: TraceStage[] = []
   const kind: AgentRequest['kind'] = input.question === undefined ? 'daily' : 'answer'
+  const previousQuestion = input.previousQuestions?.at(-1)?.trim()
+  const question = input.question === undefined
+    ? undefined
+    : /^(?:(?:那|那么|所以)(?:今天|现在)?)?还?(?:可以|行|能)(?:吗|么|呢|？|\?)?$/.test(input.question.trim()) && previousQuestion
+      ? `${previousQuestion}；${input.question}`
+      : input.question
 
   // 3) 个人基线
   let mark = now()
@@ -80,7 +88,7 @@ export async function runAgent(input: AgentInput, options: RunAgentOptions = {})
   mark = now()
   const recalled = recallMemories(input.memories, {
     signals,
-    ...(input.question === undefined ? {} : { question: input.question }),
+    ...(question === undefined ? {} : { question }),
   })
   stages.push(stage('recall', '召回长期记忆', mark, `${recalled.length} 条`))
 
@@ -90,7 +98,7 @@ export async function runAgent(input: AgentInput, options: RunAgentOptions = {})
     subjective: input.subjective,
     signals,
     recalled,
-    ...(input.question === undefined ? {} : { question: input.question }),
+    ...(question === undefined ? {} : { question }),
   })
   stages.push(
     stage('context', '构建结构化上下文', mark, `${context.knowledge.length} 个知识条目可引用`),
@@ -99,7 +107,7 @@ export async function runAgent(input: AgentInput, options: RunAgentOptions = {})
   const request: AgentRequest =
     input.question === undefined
       ? { kind: 'daily', context, answers: input.answers ?? [] }
-      : { kind: 'answer', context, question: input.question }
+      : { kind: 'answer', context, question: question ?? input.question }
 
   // 7) Provider
   const provider = options.provider ?? (await resolveProvider({ id: options.providerId }))

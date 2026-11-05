@@ -22,7 +22,6 @@ const TABS: Tab[] = [
     to: '/record',
     label: '记录',
     Icon: IconRecord,
-    // 趋势已并入记录页；/trends 与 /plan 都是历史/二级地址
     active: (p) => p.startsWith('/record') || p.startsWith('/trends') || p.startsWith('/plan'),
   },
   { to: '/profile', label: '我的', Icon: IconUser, active: (p) => p.startsWith('/profile') },
@@ -44,12 +43,12 @@ export function BottomNav() {
               <Link
                 to={to}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex h-[60px] flex-col items-center justify-center gap-1 transition-colors ${
-                  isActive ? 'text-brand' : 'text-muted'
+                className={`flex h-[60px] flex-col items-center justify-center gap-0.5 transition-colors ${
+                  isActive ? 'text-brand-deep' : 'text-muted'
                 }`}
               >
-                <Icon className="size-[22px]" />
-                <span className="text-[10px] font-medium">{label}</span>
+                <span className={`flex size-8 items-center justify-center rounded-xl ${isActive ? 'bg-brand-soft/75' : ''}`}><Icon className="size-[20px]" /></span>
+                <span className={`text-[10px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{label}</span>
               </Link>
             </li>
           )

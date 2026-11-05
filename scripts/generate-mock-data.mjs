@@ -93,6 +93,10 @@ for (let i = 0; i < DAYS; i += 1) {
     wakeTime: wakeFrom(bedMinutes, sleep),
     steps,
     activeMinutes,
+    // 仅供界面演示的合成观测值；不参与生活状态分，也不用于医疗判读。
+    restingHeartRate: 63 + ((idx * 3) % 8),
+    bloodPressureSystolic: 112 + ((idx * 5) % 13),
+    bloodPressureDiastolic: 72 + ((idx * 3) % 9),
     meals: {
       breakfast: idx % 7 !== 3,
       lunch: true,

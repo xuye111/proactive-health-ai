@@ -1,154 +1,126 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AppBar } from '../components/AppBar'
-import { SectionTitle } from '../components/SectionTitle'
-import {
-  IconBook,
-  IconBrain,
-  IconChevronRight,
-  IconGraph,
-  IconShield,
-} from '../components/icons'
-import profile from '../data/profile.json'
+import { IconChevronRight, IconUser } from '../components/icons'
 import { ASSISTANT_NAME } from '../lib/assistant'
-import { today } from '../lib/derive'
-import { KNOWLEDGE } from '../lib/knowledge'
-import { useMemoryEntries } from '../lib/agentRules'
+import { clearPersonalFollowUps } from '../lib/followUpStore'
+import { clearPersonalRecords, setPersonalProfile, setRemindersPaused, useHealthState } from '../lib/healthStore'
 
-const BACKGROUND_ROWS = [
-  { label: '既往史', value: profile.background.history },
-  { label: '家族史', value: profile.background.family },
-  { label: '药物', value: profile.background.medications },
-  { label: '过敏史', value: profile.background.allergies },
-]
-
-const LIFESTYLE_ROWS = [
-  { label: '睡眠', value: profile.lifestyle.sleep },
-  { label: '饮食', value: profile.lifestyle.diet },
-  { label: '运动', value: profile.lifestyle.exercise },
-  { label: '烟酒', value: profile.lifestyle.habits },
-]
+const groupTitle = 'mb-2 px-4 text-[13px] font-medium text-muted'
+const group = 'rounded-2xl bg-surface ring-1 ring-line/60'
+const row = 'flex min-h-12 items-center gap-3 rounded-xl px-4 py-3 text-[16px] leading-snug text-ink active:bg-line-soft'
+const field = 'mt-1 block min-h-11 w-full rounded-lg border border-line px-3 py-2 text-base text-ink'
+const footer = 'mt-2 px-4 text-[13px] leading-relaxed text-muted'
 
 export default function Profile() {
-  const memories = useMemoryEntries()
+  const health = useHealthState()
+  const [notice, setNotice] = useState('')
+  const [editing, setEditing] = useState(false)
+  const saveProfile = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
+    const birthYear = String(data.get('birthYear') ?? '')
+    try {
+      setPersonalProfile({
+        displayName: String(data.get('displayName') ?? ''),
+        focus: String(data.get('focus') ?? ''),
+        ...(birthYear ? { birthYear: Number(birthYear) } : {}),
+        ...(health.profile.heightCm ? { heightCm: health.profile.heightCm } : {}),
+      })
+      setNotice('个人资料已保存到本机')
+      setEditing(false)
+    } catch (error) { setNotice(error instanceof Error ? error.message : '保存失败') }
+  }
 
-  const secondary = [
-    {
-      id: 'memory',
-      to: '/profile/memory',
-      label: '长期记忆',
-      hint: `${ASSISTANT_NAME}对你的长期理解`,
-      meta: `${memories.length} 条`,
-      Icon: IconBrain,
-    },
-    {
-      id: 'knowledge',
-      to: '/profile/knowledge',
-      label: '知识管理',
-      hint: 'Markdown 条目 · 关键词检索',
-      meta: `${KNOWLEDGE.length} 个条目`,
-      Icon: IconBook,
-    },
-    {
-      id: 'graph',
-      to: '/profile/graph',
-      label: '知识图谱',
-      hint: '实体与关系 · 局部视图',
-      meta: '12 个实体',
-      Icon: IconGraph,
-    },
-    {
-      id: 'safety',
-      to: '/profile/safety',
-      label: '数据与安全',
-      hint: '能力边界、输出分级与升级路径',
-      meta: '',
-      Icon: IconShield,
-    },
-  ]
+  const remindersEnabled = !health.remindersPaused
 
-  return (
-    <>
-      <AppBar title="我的" subtitle={`健康档案是${ASSISTANT_NAME}了解你的长期上下文`} />
+  return <>
+    <header className="safe-top px-5">
+      <h1 className="pb-3 pt-4 text-[34px] font-bold leading-tight tracking-tight text-ink">我的</h1>
+    </header>
+    <div className="space-y-6 px-4 pb-5">
+      <section aria-labelledby="profile-details">
+        <h2 id="profile-details" className={groupTitle}>个人资料</h2>
+        <div className={group}>
+          <button type="button" aria-expanded={editing} onClick={() => setEditing(!editing)}
+            className={row + ' w-full text-left'}>
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-deep">
+              <IconUser className="size-6" aria-hidden="true" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-semibold">{health.profile.displayName || '设置称呼'}</span>
+              <span className="block truncate text-[13px] text-muted">
+                {health.profile.birthYear ? `${health.profile.birthYear} 年出生 · ` : ''}{health.profile.focus || '管理你的随访资料'}
+              </span>
+            </span>
+            <span className="shrink-0 text-[15px] text-brand-deep">{editing ? '收起' : '编辑'}</span>
+          </button>
+          {editing && <form onSubmit={saveProfile} className="space-y-4 border-t border-line-soft px-4 py-4">
+            <label className="block text-[13px] text-ink-soft">
+              称呼
+              <input name="displayName" maxLength={30} defaultValue={health.profile.displayName}
+                placeholder="怎么称呼你" className={field} />
+            </label>
+            <label className="block text-[13px] text-ink-soft">
+              出生年份（选填）
+              <input name="birthYear" type="number" inputMode="numeric" min="1900" max={new Date().getFullYear()}
+                defaultValue={health.profile.birthYear ?? ''} className={field} />
+            </label>
+            <label className="block text-[13px] text-ink-soft">
+              随访关注点（选填）
+              <input name="focus" maxLength={120} defaultValue={health.profile.focus}
+                placeholder="例如：按时完成复查" className={field} />
+            </label>
+            <button type="submit" className="min-h-11 w-full rounded-xl bg-brand px-4 text-[16px] font-semibold text-white">
+              保存资料
+            </button>
+          </form>}
+        </div>
+      </section>
 
-      <div className="space-y-5 px-4 pt-4">
-        {/* 基本信息 */}
-        <section className="card flex items-center gap-4 p-4">
-          <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-brand-soft text-[20px] font-semibold text-brand-deep">
-            {profile.name.slice(0, 1)}
-          </span>
-          <div className="min-w-0">
-            <h2 className="text-[17px] font-semibold text-ink">{profile.name}</h2>
-            <p className="mt-0.5 text-[12px] text-ink-soft">
-              {profile.age} 岁 · {profile.gender} · {profile.heightCm} cm · {today.weightKg} kg
-            </p>
-          </div>
-        </section>
+      <section aria-labelledby="profile-reminders">
+        <h2 id="profile-reminders" className={groupTitle}>提醒设置</h2>
+        <div className={group}>
+          <button type="button" role="switch" aria-checked={remindersEnabled} aria-describedby="profile-reminder-help"
+            onClick={() => setRemindersPaused(remindersEnabled)} className={row + ' w-full justify-between text-left'}>
+            <span>随访提醒</span>
+            <span aria-hidden="true" className={`relative h-8 w-[51px] shrink-0 rounded-full transition-colors ${remindersEnabled ? 'bg-brand' : 'bg-line'}`}>
+              <span className={`absolute left-0.5 top-0.5 size-7 rounded-full bg-white shadow-sm transition-transform ${remindersEnabled ? 'translate-x-[19px]' : ''}`} />
+            </span>
+          </button>
+        </div>
+        <p id="profile-reminder-help" className={footer}>{ASSISTANT_NAME}在打开应用时核对随访日期。安全提示始终优先。</p>
+      </section>
 
-        {/* 健康目标 */}
-        <section>
-          <SectionTitle title="健康目标" />
-          <div className="card divide-y divide-line-soft">
-            {profile.goals.map((goal) => (
-              <div key={goal.id} className="flex items-start gap-3 px-4 py-3">
-                <span className="mt-0.5 rounded-full border border-brand/25 bg-brand-soft/50 px-2 py-0.5 text-[11px] whitespace-nowrap text-brand-deep">
-                  {goal.label}
-                </span>
-                <p className="min-w-0 flex-1 text-[13px] leading-snug text-ink-soft">{goal.detail}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+      <section aria-labelledby="profile-data">
+        <h2 id="profile-data" className={groupTitle}>本机数据</h2>
+        <div className={group}>
+          <Link to="/record" className={row + ' justify-between'}>
+            <span>查看痛风记录</span>
+            <IconChevronRight className="size-4 shrink-0 text-muted" aria-hidden="true" />
+          </Link>
+          <div className="ml-4 border-t border-line-soft" aria-hidden="true" />
+          <button type="button" className={row + ' w-full text-left text-danger'} onClick={() => {
+            if (window.confirm('确定清除本机填写的记录和跟进事项？')) {
+              clearPersonalRecords()
+              clearPersonalFollowUps()
+              setNotice('已清除本机填写的记录和事项')
+            }
+          }}>清除记录与事项</button>
+        </div>
+        <p className={footer}>随访与对话保存在当前浏览器，化验报告由你确认后录入。</p>
+      </section>
 
-        {/* 健康背景 */}
-        <section>
-          <SectionTitle title="健康背景" />
-          <dl className="card divide-y divide-line-soft">
-            {BACKGROUND_ROWS.map((row) => (
-              <div key={row.label} className="flex gap-3 px-4 py-3">
-                <dt className="w-[60px] shrink-0 text-[12px] text-muted">{row.label}</dt>
-                <dd className="min-w-0 flex-1 text-[13px] leading-snug text-ink">{row.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* 生活方式 */}
-        <section>
-          <SectionTitle title="生活方式" />
-          <dl className="card divide-y divide-line-soft">
-            {LIFESTYLE_ROWS.map((row) => (
-              <div key={row.label} className="flex gap-3 px-4 py-3">
-                <dt className="w-[60px] shrink-0 text-[12px] text-muted">{row.label}</dt>
-                <dd className="min-w-0 flex-1 text-[13px] leading-snug text-ink">{row.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* 二级页面：四项都可以进 */}
-        <section>
-          <SectionTitle title="更多" hint={`${ASSISTANT_NAME}的记忆、知识与边界`} />
-          <div className="card divide-y divide-line-soft overflow-hidden">
-            {secondary.map(({ id, to, label, hint, meta, Icon }) => (
-              <Link key={id} to={to} className="flex items-center gap-3 px-4 py-3">
-                <Icon className="size-[18px] shrink-0 text-ink-soft" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[14px] text-ink">{label}</p>
-                  <p className="text-[11px] text-muted">{hint}</p>
-                </div>
-                {meta !== '' && <span className="shrink-0 text-[10px] text-muted">{meta}</span>}
-                <IconChevronRight className="size-4 shrink-0 text-muted" />
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <p className="pb-2 text-center text-[10px] leading-relaxed text-muted">
-          主动健康助手 · v0.1.0（第一阶段外壳）
-          <br />
-          全部为演示数据，非真实用户信息
-        </p>
-      </div>
-    </>
-  )
+      <section aria-labelledby="profile-safety">
+        <h2 id="profile-safety" className={groupTitle}>产品边界</h2>
+        <div className={group}>
+          <Link to="/profile/safety" className={row + ' justify-between'}>
+            <span>数据与安全说明</span>
+            <IconChevronRight className="size-4 shrink-0 text-muted" aria-hidden="true" />
+          </Link>
+        </div>
+        <p className={footer}>适用于已由医生确诊痛风后的随访记录。检验结果与治疗安排请和医生确认。</p>
+      </section>
+      {notice && <p role="status" className="rounded-xl bg-brand-soft px-4 py-3 text-[13px] text-brand-deep">{notice}</p>}
+    </div>
+  </>
 }

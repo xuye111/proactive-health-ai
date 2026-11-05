@@ -26,7 +26,7 @@ function EntryDetail({ entry, onBack }: { entry: KnowledgeEntry; onBack: () => v
         <dl className="mt-3 space-y-1.5 border-t border-line-soft pt-3">
           <div className="flex gap-2 text-[11px]">
             <dt className="w-[62px] shrink-0 text-muted">来源</dt>
-            <dd className="min-w-0 flex-1 text-ink-soft">{entry.source}</dd>
+            <dd className="min-w-0 flex-1 break-words text-ink-soft">{entry.source.split(/(https?:\/\/[^\s；]+)/g).map((part, index) => part.startsWith('http') ? <a key={index} href={part} target="_blank" rel="noreferrer" className="break-all text-brand-deep underline">{part}</a> : part)}</dd>
           </div>
           <div className="flex gap-2 text-[11px]">
             <dt className="w-[62px] shrink-0 text-muted">复核状态</dt>
