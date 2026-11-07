@@ -1,6 +1,6 @@
 # ADR-0012：守门层与生成层分离，致命违规整体替换（fail-closed）
 
-- 状态：已采纳
+- 状态：早期通用健康原型已采纳。现行痛风随访见[架构说明](../architecture.md#默认页面与数据流)。
 - 日期：2026-09-19
 - 相关文件：`src/ai/guardrails.ts, src/ai/safety.ts`
 - 相关文档：[docs/architecture.md](../architecture.md)

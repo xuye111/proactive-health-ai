@@ -1,5 +1,7 @@
 # 睡眠
 
+> 用途：早期通用健康原型的回归资料。现行小满问答使用[痛风知识条目](../../ai/goutKnowledge.ts)。
+
 > 来源：国家卫生健康委《睡眠健康核心信息及释义》（2025-03-18）：https://www.nhc.gov.cn/guihuaxxs/c100133/202503/70d5836afe804a858b899ee951a24a13.shtml ；CDC《About Sleep》：https://www.cdc.gov/sleep/about/
 > 复核状态：待医学复核
 > 更新日期：2026-09-27

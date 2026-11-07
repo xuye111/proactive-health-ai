@@ -1,6 +1,6 @@
 # ADR-0008：状态存本机 localStorage，不做后端
 
-- 状态：已采纳
+- 状态：早期通用健康原型已采纳。现行痛风随访见[架构说明](../architecture.md#默认页面与数据流)。
 - 日期：2026-09-19
 - 相关文件：`src/lib/agentStore.ts`
 
