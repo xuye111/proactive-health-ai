@@ -36,4 +36,5 @@ npm run eval
 
 - [模型卡](./MODEL_CARD.md)
 - [架构说明](./docs/architecture.md)
-- [历史案例与设计决策](./CASE_STUDY.md) · [ADR](./docs/adr/README.md)
+- [痛风主动随访案例](./CASE_STUDY.md)
+- [早期设计档案](./docs/adr/README.md)
